@@ -45,9 +45,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
       String text = this.guess.getText().toString().toUpperCase();
       Guess guess = game.guess(text);
       adapter.add(guess);
-      MainActivity.this.guess.setText("");
+      this.guess.setText("");
     } catch (IllegalArgumentException e) {
-      Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+      Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
     }
   }
 }
