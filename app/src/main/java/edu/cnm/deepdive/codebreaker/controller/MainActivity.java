@@ -21,13 +21,14 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener {
 
-  private static final String POOL = "ROYGBIV";
+  private static final String POOL = "ROYGBV";
   private static final int CODE_LENGTH = 4;
   private ListView guessList;
   private EditText guess;
   private Button submit;
   private Game game;
   private GuessAdapter adapter;
+  private SecureRandom rng;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +38,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     guess = findViewById(R.id.guess);
     submit = findViewById(R.id.submit);
     submit.setOnClickListener(this);
-    game = new Game(POOL, CODE_LENGTH, new SecureRandom());
     adapter = new GuessAdapter(this);
-    guessList.setAdapter(adapter);
+    rng = new SecureRandom();
+    startGame();
   }
 
   @Override
@@ -54,7 +55,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     boolean handled = true;
     switch (item.getItemId()) {
       case R.id.new_game:
-        // TODO Start new game.
+        startGame();
+        break;
+      case R.id.restart_game:
+        restartGame();
         break;
       default:
         handled = super.onOptionsItemSelected(item);
@@ -73,5 +77,20 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     } catch (IllegalArgumentException e) {
       Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
     }
+  }
+
+  private void startGame() {
+    game = new Game(POOL, CODE_LENGTH, rng);
+    resetList();
+  }
+
+  private void restartGame() {
+    game.restart();
+    resetList();
+  }
+
+  private void resetList() {
+    adapter.clear();
+    guessList.setAdapter(adapter);
   }
 }
