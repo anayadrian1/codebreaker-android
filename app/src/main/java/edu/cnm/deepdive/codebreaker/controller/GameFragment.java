@@ -1,8 +1,6 @@
 package edu.cnm.deepdive.codebreaker.controller;
 
-import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -13,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Spinner;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -122,10 +119,10 @@ public class GameFragment extends Fragment implements InputFilter{
       Spinner spinner =
           (Spinner) inflater.inflate(R.layout.swatch_spinner, binding.guessControls, false);
       CodeCharacterAdapter adapter = new CodeCharacterAdapter(
-          getContext(), colorValueMap, colorLabelMap, codeCharacters, spinner);
+          getContext(), colorValueMap, colorLabelMap, codeCharacters);
       spinner.setAdapter(adapter);
       spinners[i] = spinner;
-      binding.guessControls.addView(spinner, i);
+      binding.spinners.addView(spinner);
     }
   }
 
@@ -146,10 +143,17 @@ public class GameFragment extends Fragment implements InputFilter{
     binding.guessList.setAdapter(adapter);
     binding.guessList.setSelection(adapter.getCount() - 1);
     codeLength = game.getLength();
+    for (int i = 0; i < spinners.length; i++) {
+      spinners[i].setVisibility((i < codeLength) ? View.VISIBLE : View.GONE);
+    }
   }
 
   public void recordGuess() {
-    // viewModel.guess(binding.guess.getText().toString().trim().toUpperCase());
+    StringBuilder builder = new StringBuilder(codeLength);
+    for (int i = 0; i < codeLength; i++) {
+      builder.append(codeCharacters[spinners[i].getSelectedItemPosition()]);
+    }
+    viewModel.guess(builder.toString());
   }
 
   private void startGame() {
