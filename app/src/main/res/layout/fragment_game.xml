@@ -42,7 +42,5 @@
       android:layout_margin="@dimen/half_margin"
       android:text="@string/submit"/>
 
-
-
   </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
