@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class MainViewModel extends AndroidViewModel {
 
-  public static final String POOL = "ROYGBV";
+  public static final String POOL = "ROYGBIV";
 
   private final MutableLiveData<Game> game;
   private final MutableLiveData<Guess> guess;
