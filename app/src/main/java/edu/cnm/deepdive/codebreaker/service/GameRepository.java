@@ -10,6 +10,7 @@ import edu.cnm.deepdive.codebreaker.model.pojo.ScoreSummary;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -23,9 +24,18 @@ public class GameRepository {
     scoreDao = CodebreakerDatabase.getInstance().getScoreDao();
   }
 
-  public Completable save(Score score) {
-    return Completable.fromSingle(scoreDao.insert(score))
-        .subscribeOn(Schedulers.io()); // put on a thread
+  public Completable save(Game game, Date timestamp, int previousGuessCount) {
+    return Single.fromCallable(() -> {
+      Score score = new Score();
+      score.setCodeLength(game.getLength());
+      score.setTimestamp(timestamp);
+      score.setGuessCount(game.getGuessCount() + previousGuessCount);
+      return score;
+    })
+        .subscribeOn(Schedulers.computation())
+        .flatMap(scoreDao::insert)
+        .ignoreElement()
+        .subscribeOn(Schedulers.io());
   }
 
   public Single<Game> newGame(String pool, int codeLength, Random rng) {
@@ -38,7 +48,7 @@ public class GameRepository {
         .subscribeOn(Schedulers.computation());
   }
 
-  public Single<Guess> guess (Game game, String text) {
+  public Single<Guess> guess(Game game, String text) {
     return Single.fromCallable(() -> game.guess(text))
         .subscribeOn(Schedulers.computation());
   }

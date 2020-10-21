@@ -1,5 +1,6 @@
 package edu.cnm.deepdive.codebreaker.model.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -12,7 +13,9 @@ public class Score {
   @ColumnInfo(name = "game_id")
   private long id;
 
-  @ColumnInfo
+  @SuppressWarnings("NotNullFieldNotInitialized")
+  @NonNull
+  @ColumnInfo(index = true)
   private Date timestamp;
 
   @ColumnInfo(name = "guess_count")
